@@ -9,3 +9,13 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3001/api/persons
+
+###
+
+POST https://render-test-sxe8.onrender.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Oisin Cummins",
+    "number": "089 210 6850"
+}
