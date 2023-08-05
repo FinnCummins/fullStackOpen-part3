@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const Note = require('./models/person')
 
 app.use(express.json())
 app.use(cors())
@@ -13,48 +15,22 @@ morgan.token('post-content', function getId (req) {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 
-let notes = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
 app.get('/', (request, response) => {
     console.log("Hello World")
     response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(notes)
+    Note.find({}).then(persons => {
+      response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const noteId = Number(request.params.id)
-    const note = notes.find(note => note.id === noteId)
 
-    if (note) {
-        response.json(note)
-    }
-    else {
-        response.status(404).end()
-    }
+    Note.findById(request.params.id).then(note => {
+      response.json(note)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -73,31 +49,30 @@ app.post('/api/persons', (request, response) => {
 
     console.log(body)
 
-    if (!body.name) {
+    if (body.name === undefined) {
         return response.status(400).json({ 
             error: 'name missing' 
         })
     }
-    else if (!body.number) {
+    else if (body.number === undefined) {
         return response.status(400).json({ 
             error: 'number missing' 
         })
     }
-    else if (notes.find(note => note.name === body.name)) {
+    /*else if (notes.find(note => note.name === body.name)) {
         return response.status(400).json({ 
             error: 'name already exists in the phone book' 
         })
-    }
+    }*/
 
-    const note = {
+    const note = new Note({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+    })
 
-    notes = notes.concat(note)
-
-    response.json(note)
+    note.save().then(savedNote => {
+        response.json(savedNote)
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -107,7 +82,7 @@ app.get('/info', (request, response) => {
     `)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })

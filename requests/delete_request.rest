@@ -2,12 +2,11 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Finn Cummins",
+    "name": "D-g Cummins",
     "number": "089 210 6850"
 }
 
 ###
-
 GET http://localhost:3001/api/persons
 
 ###
@@ -19,3 +18,7 @@ Content-Type: application/json
     "name": "Oisin Cummins",
     "number": "089 210 6850"
 }
+
+###
+
+GET http://localhost:3001/api/persons/3
