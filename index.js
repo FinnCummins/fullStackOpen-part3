@@ -50,7 +50,7 @@ const generateId = () => {
     return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     console.log(body)
@@ -84,14 +84,14 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  const { name, number } = request.body
 
   const note = {
-    name: body.name,
-    number: body.number,
+    name: name,
+    number: number,
   }
 
-  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+  Note.findByIdAndUpdate(request.params.id, {name, number}, { new: true, runValidators:true, context: 'query'})
     .then(updatedNote => {
       response.json(updatedNote)
     })
