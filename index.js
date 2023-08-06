@@ -83,6 +83,21 @@ app.post('/api/persons', (request, response) => {
         .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const note = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then(updatedNote => {
+      response.json(updatedNote)
+    })
+    .catch(error => next(error))
+})
+
 app.get('/info', (request, response) => {
     response.send(`
         <p>Phonebook has info for ${notes.length} people</p>
