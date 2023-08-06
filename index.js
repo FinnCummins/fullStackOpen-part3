@@ -99,10 +99,12 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-    response.send(`
-        <p>Phonebook has info for ${notes.length} people</p>
+    Note.find({}).then(persons => {
+      response.send(`
+        <p>Phonebook has info for ${persons.length} people</p>
         <p>${new Date()}</p>
     `)
+    })
 })
 
 const PORT = process.env.PORT
