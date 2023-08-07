@@ -34,8 +34,8 @@ else if (process.argv.length === 5) {
     name: process.argv[3],
     number: process.argv[4],
   })
-  
-  note.save().then(result => {
+
+  note.save().then(() => {
     console.log(`added ${process.argv[3]} ${process.argv[4]} to phonebook`)
     mongoose.connection.close()
   })
